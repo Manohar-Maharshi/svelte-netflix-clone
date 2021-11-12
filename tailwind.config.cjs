@@ -4,9 +4,15 @@ const config = {
 
   theme: {
     extend: {},
+    fontFamily: {
+    	'sans' : "Roboto,san-serif",
+    }
   },
 
-  plugins: [],
+  plugins: [
+  	require('tailwind-scrollbar'),
+  	require('@tailwindcss/line-clamp'),
+  ],
 };
 
 module.exports = config;

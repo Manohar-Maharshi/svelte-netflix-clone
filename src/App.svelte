@@ -1,16 +1,38 @@
 <script>
-  import { Router, Route } from "svelte-routing";
-  import Home from "$routes/Home.svelte";
+  import {Route} from 'tinro'; 
   import SignUp from "$routes/SignUp.svelte";
-  import LogIn from '$routes/LogIn.svelte'
+  import LogIn from '$routes/LogIn.svelte';
 
-  export let url = "";
+  import HomeNavBar from '$lib/HomeNavBar.svelte'
+
+  import Home from "$routes/main/Home.svelte";
+  import Movies from '$routes/main/Movies.svelte'
+  import TvShows from '$routes/main/TvShows.svelte'
+  import Profile from '$routes/main/Profile.svelte'
+
 </script>
 
-<Router url="{url}">
-  <div>
-    <Route path="Home" component="{Home}" />
-    <Route path="login" component="{LogIn}" />
-    <Route path="/" component="{SignUp}" />
-  </div>
-</Router>
+
+
+
+<Route path="/">
+	<SignUp />
+</Route>
+<Route path="/login">
+	<LogIn />
+</Route>
+<Route path="/browse/*">
+	<HomeNavBar />
+    <Route path="/">
+    	<Home />
+    </Route>
+	<Route path="/movies">
+		<Movies />
+	</Route>
+	<Route path="/tv-shows">
+		<TvShows />
+	</Route>
+	<Route path="/profile">
+		<Profile />
+	</Route>
+</Route>

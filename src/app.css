@@ -5,4 +5,7 @@ body{
 	background-color: #000;
 	color: #fff;
 }
+.active-link{
+	@apply text-red-500 font-semibold ;
+}
 @tailwind utilities;

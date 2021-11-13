@@ -12,6 +12,7 @@ specifiers:
   svelte-routing: ^1.6.0
   tailwind-scrollbar: ^1.3.1
   tailwindcss: ^2.2.16
+  tinro: ^0.6.8
   vite: ^2.6.4
 
 devDependencies:
@@ -26,6 +27,7 @@ devDependencies:
   svelte-routing: 1.6.0_svelte@3.44.1
   tailwind-scrollbar: 1.3.1_0c54bdadaf9d9c9c6c134cb2c6c061a3
   tailwindcss: 2.2.19_0c54bdadaf9d9c9c6c134cb2c6c061a3
+  tinro: 0.6.8
   vite: 2.6.14
 
 packages:
@@ -1845,6 +1847,10 @@ packages:
 
   /timsort/0.3.0:
     resolution: {integrity: sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=}
+    dev: true
+
+  /tinro/0.6.8:
+    resolution: {integrity: sha512-t315mzy9xRxU+1AEpxTy3wDyoEt2nhK4QLQ8pdGoIHzveycq3GU02lxXs4iYrrsJtkkCzcA1Vt4AV7Oxtpu/XA==}
     dev: true
 
   /tmp/0.2.1:

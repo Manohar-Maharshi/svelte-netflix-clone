@@ -19,6 +19,7 @@
     "svelte-routing": "^1.6.0",
     "tailwind-scrollbar": "^1.3.1",
     "tailwindcss": "^2.2.16",
+    "tinro": "^0.6.8",
     "vite": "^2.6.4"
   }
 }

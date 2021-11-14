@@ -6,6 +6,6 @@ body{
 	color: #fff;
 }
 .active-link{
-	@apply text-red-500 font-semibold ;
+	@apply text-[#e50914] font-semibold ;
 }
 @tailwind utilities;

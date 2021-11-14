@@ -3,7 +3,9 @@
 	let isSignUpFormOpened = false;
 	let error = "";
 
-	let email,password,confirmPassword;
+	let email ="";
+	let password = "";
+	let confirmPassword ="";
 
 	 const handleLogin = () => {
 	    if(email.trim() != "" && password.trim() != ""){

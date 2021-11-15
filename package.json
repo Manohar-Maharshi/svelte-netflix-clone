@@ -12,6 +12,7 @@
     "@tailwindcss/line-clamp": "^0.2.2",
     "autoprefixer": "^10.3.7",
     "cssnano": "^5.0.8",
+    "movie-trailer": "^2.1.0",
     "postcss": "^8.3.9",
     "postcss-load-config": "^3.1.0",
     "svelte": "^3.37.0",

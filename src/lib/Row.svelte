@@ -35,7 +35,7 @@
 	    		{:then result} 		
 					{#each result as item}	
 						<div on:click={() => getMovieData(item?.id)} class="group w-[11rem] my-1 rounded hover:ring hover:ring-gray-400 cursor-pointer">
-							<img class="  w-full h-full rounded object-cover" src={`https://image.tmdb.org/t/p/w500${item?.poster_path}`} alt="poster">
+							<img loading="lazy" class="  w-full h-full rounded object-cover" src={`https://image.tmdb.org/t/p/w500${item?.poster_path}`} alt="poster">
 						</div>
 					{/each}
 	        	{/await}

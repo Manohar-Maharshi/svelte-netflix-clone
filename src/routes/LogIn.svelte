@@ -1,4 +1,6 @@
 <script>
+	import { auth,db } from '$store/firebase'
+	import { createUserWithEmailAndPassword } from "firebase/auth";	
 	import { router } from 'tinro'
 	let isSignUpFormOpened = false;
 	let error = "";
@@ -13,9 +15,25 @@
 	    }else{
 	    	alert("Enter email and password!!!!!!");
 	    }
-	 }
-			
+	}
 
+	 const handleSignUp = async () => {
+	    if(email.trim() != "" && password.trim() != "" && password.trim() != "" && confirmPassword.trim() != ""){
+	    	if(password === confirmPassword){
+	    		error = "";
+	    	}else{
+	    		error ="Passwrods didn't match, please check"
+	    	}
+	    }else{
+	    	alert("Must Enter Your Email and Password!!!");
+	    }
+	 }
+
+	$: if (error) {
+		setTimeout(() =>{
+			error = "";
+		}, 3000);
+	}
 </script>
 <main>
 	<div class="relative h-[706.984px]">
@@ -36,8 +54,8 @@
 		   	{#if !isSignUpFormOpened}
 		   		<h3 class="my-3 mb-6 text-3xl font-medium">Sign In</h3>
 		   		<form on:submit|preventDefault={handleLogin} class="flex items-center flex-col w-full space-y-4">
-		   			<input bind:value={email} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="email" placeholder="Email or Phone number">
-		   			<input bind:value={password} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Password">
+		   			<input required bind:value={email} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="email" placeholder="Email or Phone number">
+		   			<input required bind:value={password} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Password">
 		   			<div class="pt-4 w-full">
 		   				<button type="submit" class="w-full py-2.5 text-lg font-medium bg-[#e50914]">Sign In</button>
 		   			</div>
@@ -48,14 +66,14 @@
 	   			</div>
 	   		{:else}
 		   		<h3 class="my-3 mb-6 text-3xl font-medium">Sign Up</h3>
-		   		<div class="flex items-center flex-col w-full space-y-4">
-		   			<input class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="email" placeholder="Email or Phone number">
-		   			<input class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Password">
-		   			<input class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Confirm Password">
+		   		<form on:submit|preventDefault={handleSignUp} class="flex items-center flex-col w-full space-y-4">
+		   			<input required bind:value={email} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="email" placeholder="Email or Phone number">
+		   			<input required bind:value={password} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Password">
+		   			<input required bind:value={confirmPassword} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Confirm Password">
 		   			<div class="pt-4 w-full">
-		   				<button type="button" class="w-full py-2.5 text-lg font-medium bg-[#e50914]">Sign Up</button>
+		   				<button type="submit" class="w-full py-2.5 text-lg font-medium bg-[#e50914]">Sign Up</button>
 		   			</div>
-		   		</div>
+		   		</form>
 		   		<div class="w-full h-0.5 bg-gray-900 my-6"></div>
 	   			<div class="w-full">
 	   				<button>Already Have An Account? <span  on:click={() => isSignUpFormOpened = !isSignUpFormOpened}  class="text-[#e50914] hover:underline">Sign in now.</span></button>

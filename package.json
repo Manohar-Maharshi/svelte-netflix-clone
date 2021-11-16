@@ -12,6 +12,8 @@
     "@tailwindcss/line-clamp": "^0.2.2",
     "autoprefixer": "^10.3.7",
     "cssnano": "^5.0.8",
+    "firebase": "^9.4.1",
+    "install": "^0.13.0",
     "just-debounce-it": "^3.0.1",
     "movie-trailer": "^2.1.0",
     "postcss": "^8.3.9",

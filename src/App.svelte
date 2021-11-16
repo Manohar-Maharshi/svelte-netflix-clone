@@ -5,6 +5,7 @@
 
   import HomeNavBar from '$lib/HomeNavBar.svelte'
   import Footer from '$lib/Footer.svelte'
+  import Error from '$lib/Error.svelte'
 
   import Home from "$routes/main/Home.svelte";
   import Movies from '$routes/main/Movies.svelte'
@@ -19,33 +20,41 @@
 
 
 
-<Route path="/">
-	<SignUp />
-</Route>
-<Route path="/login">
-	<LogIn />
-</Route>
-<Route path="/browse/*">
-	<HomeNavBar />
-    <Route path="/">
-    	<Home />
-    </Route>
-	<Route path="/movies">
-		<Movies />
+<Route>
+	<Route path="/">
+		<SignUp />
 	</Route>
-	<Route path="/tv-shows">
-		<TvShows />
+	<Route path="/login">
+		<LogIn />
 	</Route>
-	<Route path="/profile">
-		<Profile />
+	<Route path="/browse/*">
+		<HomeNavBar />
+	    <Route path="/">
+	    	<Home />
+	    </Route>
+		<Route path="/movies">
+			<Movies />
+		</Route>
+		<Route path="/tv-shows">
+			<TvShows />
+		</Route>
+		<Route path="/profile">
+			<Profile />
+		</Route>
+		<Route path="/my-list">
+			<MyList />
+		</Route>
+		<Route path="/film/:title" let:meta>
+			<Film />
+		</Route>
+		<Route path="/tv/:title" let:meta>
+			<Tv />
+		</Route>
+		<Route fallback>
+			<Error />
+		</Route>
 	</Route>
-	<Route path="/my-list">
-		<MyList />
-	</Route>
-	<Route path="/film/:title" let:meta>
-		<Film />
-	</Route>
-	<Route path="/tv/:title" let:meta>
-		<Tv />
+	<Route fallback>
+		<Error />
 	</Route>
 </Route>

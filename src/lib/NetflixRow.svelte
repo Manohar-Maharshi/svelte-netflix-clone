@@ -7,19 +7,18 @@
 	export let uri = "";
 </script>
 <div class="mb-5">
-	<div class="container mx-auto px-4 md:px-0 flex flex-col -mt-20">
+	<div class="container mx-auto px-4 md:px-0 flex flex-col -mt-20 -z-10">
 		<h2 class="text-2xl  font-medium leading-relaxed my-2">{name}</h2>
 	      <div class="flex overflow-x-auto went px-1" >
-	        <div class="flex flex-nowrap items-center space-x-5" >
+	        <div class="flex flex-nowrap items-center space-x-5 " >
 	        	{#await fetchMovies(uri)}
 	        		loading...
 	    		{:then result} 		
 					{#each result as item}	
 						{#if !!item?.backdrop_path}						
-							<div on:click={() => router.goto(`/browse/tv/${item?.id}`)} class="relative group w-[17rem] h-[10rem] my-1 rounded hover:ring hover:ring-gray-400 cursor-pointer">
-								<img class=" w-full h-full rounded object-cover" src={`https://image.tmdb.org/t/p/w500${item?.backdrop_path}`} alt="poster">
-								<div class="group-hover:grid hidden absolute grid place-items-center inset-0 bg-gray-900/80 rounded">
-									<h2 class="text-2xl text-center p-2 line-clamp-3 font-medium">{item?.name}</h2>
+							<div on:click={() => router.goto(`/browse/tv/${item?.id}`)} class="  group w-[17rem] h-[10rem] my-1 rounded hover:ring hover:ring-gray-400 cursor-pointer">
+								<div class=" w-full h-full">
+									<img loading="lazy" title={item?.name} class="w-full h-full rounded object-cover" src={`https://image.tmdb.org/t/p/w500${item?.backdrop_path}`} alt="poster">
 								</div>
 							</div>
 						{/if}

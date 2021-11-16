@@ -1,11 +1,32 @@
 <script>
-	import {active} from 'tinro';
+	import ClickOutside from 'svelte-click-outside';
+	import {active,router} from 'tinro';
+	import { uriArray,fetchMovies } from '$store/movieRows'
+	import debounce from 'just-debounce-it';
 
 	let openDropDown = false;
+	let openSearchList = false
+
+	let val = "";
+
+    let triggerEl;
+    let panelVisible = false;
+ 
+    function togglePanel() {
+      panelVisible = !panelVisible;
+    }
+ 
+    function hidePanel() {
+      panelVisible = false;
+    }
+
+  const handleInput = debounce (event => {
+		val = event.target.value;
+	}, 700);
 </script>
 
 
-<main class="fixed top-0 w-full bg-[#090909] shadow-lg" >
+<main class="fixed top-0 z-1 w-full bg-[#090909] shadow-lg" >
    <nav class="flex items-center justify-between py-2.5 container mx-auto md:px-0 px-4">
 	   <ul class="flex items-center text-gray-300 space-x-5 text-base">
 			<li  class="mr-5">
@@ -28,21 +49,39 @@
 	   </ul>
 	   <ul class="flex items-center space-x-3 md:space-x-6">
 	   		<li class="hidden md:flex">
-	   			<form class="flex items-center  border border-gray-300 px-2">
-	   				<input list="movies" placeholder="Search" class="px-3 pl-0 py-1 focus:outline-none bg-transparent" type="search">
-					<datalist id="movies">
-					  <option value="Edge">
-					  <option value="Firefox">
-					  <option value="Chrome">
-					  <option value="Opera">
-					  <option value="Safari">
-					</datalist>
+	   			<div class="w-full flex items-center relative border border-gray-300 px-2">
+	   				<input bind:this={triggerEl} on:focus={togglePanel} on:input={handleInput} value={val} placeholder="Search" class="w-full px-3 pl-0 py-1 focus:outline-none bg-transparent" type="text">
 	   				<button>
 	   					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5  text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 						</svg>
 	   				</button>
-	   			</form>
+					<div class="absolute top-10 right-0">
+						<ClickOutside on:clickoutside={hidePanel} exclude={[triggerEl]}>
+			   					<div hidden={!panelVisible} class=" bg-gray-900 w-[25rem] max-h-[20rem] overflow-y-auto shadow-lg p-2">
+				   					{#if (val.trim() != "")}   					
+				   						{#await fetchMovies(`https://api.themoviedb.org/3/search/multi?api_key=04c35731a5ee918f014970082a0088b1&language=en-US&query=${val}%20game&page=1&include_adult=true`)}
+							        		loading...
+							    		{:then result}
+											{#each result as item}	
+												<div>
+													{#if item?.media_type === "movie"}
+														<p on:click={() => {router.goto(`/browse/film/${item?.id}`); val=""}} on:click={val =""}  on:click={togglePanel} on:clcik={() => openDropDown = !openDropDown} class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">{item?.title} <span class="text-xs text-gray-400 italic">({item?.media_type})</span></p>
+													{:else if (item?.media_type === "tv")}
+														<p on:click={() => {router.goto(`/browse/tv/${item?.id}`); val=""}} on:click={val =""}  on:click={togglePanel} on:clcik={() => openDropDown = !openDropDown} class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">{item?.name} <span class="text-xs text-gray-400 italic">({item?.media_type})</span></p>
+													{/if}
+												</div>
+											{/each}
+										{:catch error}
+											<p class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">{error}</p>
+							        	{/await}
+							        {:else}
+										<p class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">Search something...</p>
+				   					{/if}
+								</div>
+			   			</ClickOutside>
+	   				</div>
+	   			</div>
 	   		</li>
 	   		<li>
 	   			<a href="/browse/profile">
@@ -74,14 +113,41 @@
 		   			<a class="pb-1" use:active active-class="active-link" href="/browse/my-list">My List</a>
 		   		</li>
 		   		<li class="pt-3">
-		   			<form class="flex items-center  border-2 border-gray-600 px-2">
-		   				<input placeholder="Search" class="w-full px-3 pl-0 py-1 focus:outline-none bg-transparent" type="search">
-		   				<button>
-		   					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5  text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-							</svg>
-		   				</button>
-		   			</form>
+		   			<div class="flex items-center relative border-2 border-gray-600 px-2">
+			   				<input bind:this={triggerEl} on:focus={togglePanel} on:input={handleInput} value={val} placeholder="Search" class="w-full px-3 pl-0 py-1 focus:outline-none bg-transparent" type="text">
+			   				<button>
+			   					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5  text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+								</svg>
+			   				</button>
+			   				<div class="absolute top-10">
+								<ClickOutside on:clickoutside={hidePanel} exclude={[triggerEl]}>
+										<div hidden={!panelVisible} class=" bg-gray-900 md:w-[25rem] max-h-[20rem] overflow-y-auto shadow-lg p-2">
+											{#if (val.trim() != "")}
+												{#await fetchMovies(`https://api.themoviedb.org/3/search/multi?api_key=04c35731a5ee918f014970082a0088b1&language=en-US&query=${val}%20game&page=1&include_adult=true`)}
+									        		loading...
+									    		{:then result}
+													{#each result as item}	
+														<div>
+															{#if item?.media_type === "movie"}
+																<p on:click={() => router.goto(`/browse/film/${item?.id}`)} on:click={val =""}  on:click={togglePanel} on:clcik={() => openDropDown = !openDropDown} class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">{item?.title} <span class="text-xs text-gray-400 italic">({item?.media_type})</span></p>
+															{:else if (item?.media_type === "tv")}
+																<p on:click={() => router.goto(`/browse/tv/${item?.id}`)} on:click={val =""} on:click={togglePanel} on:clcik={() => openDropDown = !openDropDown} class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">{item?.name} <span class="text-xs text-gray-400 italic">({item?.media_type})</span></p>
+															{/if}
+														</div>
+													{:else}
+														<p class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">Nothing😫</p>
+													{/each}
+												{:catch error}
+													<p class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">{error}</p>
+									        	{/await}
+									        {:else}
+												<p class="py-2 cursor-pointer hover:bg-gray-700 px-3 ">Search</p>
+											{/if}
+						   				</div>
+							</ClickOutside>				
+			   				</div>
+		   			</div>
 		   		</li>
 	   		</ul>
 	   </nav>

@@ -64,7 +64,7 @@
 									    </div>					
 									{/if}
 								    <div class="flex items-center space-x-5 my-5 mb-12">
-								    	<button on:click={()=> router.goto(`/browse/film/${result?.id}`)} class="bg-[#e50914] px-6 text-center py-[0.5rem] font-medium rounded bg-gray-100">
+								    	<button on:click={()=> router.goto(`/browse/film/${result?.id}`)} class="bg-[#e50914] px-6 text-center py-[0.5rem] font-medium rounded">
 								    		<div class="flex items-center justify-center space-x-1">
 								    			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 												  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />

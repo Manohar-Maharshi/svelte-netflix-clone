@@ -1,32 +1,59 @@
 <script>
-  import {Route} from 'tinro'; 
-  import SignUp from "$routes/SignUp.svelte";
-  import LogIn from '$routes/LogIn.svelte';
+	import { user } from '$store/user'
+	import { auth,db } from '$store/firebase'
+	import { onAuthStateChanged  } from "firebase/auth";	
 
-  import HomeNavBar from '$lib/HomeNavBar.svelte'
-  import Footer from '$lib/Footer.svelte'
-  import Error from '$lib/Error.svelte'
+	let signedUser = null;
 
-  import Home from "$routes/main/Home.svelte";
-  import Movies from '$routes/main/Movies.svelte'
-  import TvShows from '$routes/main/TvShows.svelte'
-  import Profile from '$routes/main/Profile.svelte'
-  import Film from '$routes/main/Film.svelte'
-  import Tv from '$routes/main/Tv.svelte'
-  import MyList from '$routes/main/MyList.svelte'
+	import {Route,router} from 'tinro'; 
+	import SignUp from "$routes/SignUp.svelte";
+	import LogIn from '$routes/LogIn.svelte';
+
+	import HomeNavBar from '$lib/HomeNavBar.svelte'
+	import Footer from '$lib/Footer.svelte'
+	import Error from '$lib/Error.svelte'
+
+	import Home from "$routes/main/Home.svelte";
+	import Movies from '$routes/main/Movies.svelte'
+	import TvShows from '$routes/main/TvShows.svelte'
+	import Profile from '$routes/main/Profile.svelte'
+	import Film from '$routes/main/Film.svelte'
+	import Tv from '$routes/main/Tv.svelte'
+	import MyList from '$routes/main/MyList.svelte'
+
+$: console.log($user)
+
+	$: onAuthStateChanged(auth, (user) => {
+		  if (user) {
+		    signedUser = user
+		  } else {
+		    signedUser = null
+		  }
+	});
+
+	$: if(signedUser){
+		$user = signedUser
+		router.goto("/browse")
+	}else{
+		$user = null;
+		router.goto("/")
+	}
 
 </script>
 
 
 
 
-<Route>
-	<Route path="/">
-		<SignUp />
+{#if !$user}	
+	<Route path="/*">
+		<Route path="/">
+			<SignUp />
+		</Route>
+		<Route path="/login">
+			<LogIn />
+		</Route>
 	</Route>
-	<Route path="/login">
-		<LogIn />
-	</Route>
+{:else}	
 	<Route path="/browse/*">
 		<HomeNavBar />
 	    <Route path="/">
@@ -54,7 +81,4 @@
 			<Error />
 		</Route>
 	</Route>
-	<Route fallback>
-		<Error />
-	</Route>
-</Route>
+{/if}

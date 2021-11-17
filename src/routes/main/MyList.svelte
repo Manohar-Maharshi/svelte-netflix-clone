@@ -74,7 +74,6 @@
 						</div>
 					{/each}
 			    </div>
-				<small class="text-center text-gray-900 my-10">double click on poster to remove from the list</small>
 			{/if}
 			{#if 2 === currentTab}
 			    <div class="grid grid-cols-2 md:grid-cols-6 gap-y-3 place-items-center md:gap-y-6" >		
@@ -89,7 +88,6 @@
 							</div>
 						{/each}
 			    </div>
-				<small class="text-center text-gray-900 my-10">double click on poster to remove from the list</small>
 			{/if}
 		</div>
 	</div>

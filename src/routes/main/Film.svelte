@@ -5,8 +5,12 @@
 	import {meta} from 'tinro';
 	const route = meta();
 
+	import { collection, addDoc,doc, setDoc ,getDoc} from "firebase/firestore"; 
+	import { auth,db } from '$store/firebase'
+	import { user } from '$store/user'
 
 	let open = false;
+	let isLoading = false;
 
 	const getMovieDetailsFromId = async (id) => {
  		const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=04c35731a5ee918f014970082a0088b1&language=en-US&append_to_response=providers,videos,images,alternative_titles,credits,keywords,recommendations,reviews,similar`)
@@ -21,6 +25,28 @@
 		var minutes = (hours - rhours) * 60;
 		var rminutes = Math.round(minutes);
 		return rhours + "h" + " " + rminutes + "m";
+	}
+
+	const addToList = async (result) => {
+		isLoading = true
+		const docSnap = await getDoc(doc(db, "users", $user.uid, "MyList" ,"Movies" ,"Movie" , result?.id.toString()));
+		if (docSnap.exists()) {
+			isLoading = false;
+		  	alert("Already In Your List")
+		} else {
+			try{
+				await setDoc(doc(db, "users", $user.uid , "MyList" ,"Movies" ,"Movie" , result?.id.toString()), {
+				  title : result?.title,
+				  image : result?.poster_path,
+				  id: result?.id,
+				})
+			}catch(e){
+				alert(e.message)
+			} finally{
+				isLoading = false;
+				alert("added to your list")
+			}
+		}
 	}
 </script>
 
@@ -77,12 +103,12 @@
 				    			<span>Play Trailer</span>
 				    		</div>
 				    	</button>
-				    	<button class="text-gray-700 px-6 text-center py-[0.5rem] font-medium rounded bg-gray-100">
+				    	<button on:click={() => addToList(result)} class="text-gray-700 px-6 text-center py-[0.5rem] font-medium rounded bg-gray-100">
 							<div class="flex items-center justify-center space-x-1">
 								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
 								  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
 								</svg>
-								<span>My List</span>
+								<span>{ isLoading ? 'Adding...' : "MyList"}</span>
 							</div>
 				    	</button>
 				    </div>

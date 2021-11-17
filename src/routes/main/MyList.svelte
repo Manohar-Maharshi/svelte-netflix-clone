@@ -78,9 +78,11 @@
 			{#if 2 === currentTab}
 			    <div class="grid grid-cols-2 md:grid-cols-6 gap-y-3 place-items-center md:gap-y-6" >		
 						{#each tvArray as item}	
-							<img on:click={() => router.goto(`/browse/tv/${item?.id}`)} loading="lazy" class="  w-full h-full rounded object-cover" src={`https://image.tmdb.org/t/p/w500${item?.image}`} alt={item?.title}>
-							<div on:click={() => delTv(item?.id)} class="absolute bottom-0">
-								❌
+							<div class="relative group w-[9rem] md:w-[11rem] my-1 rounded hover:ring hover:ring-gray-400 cursor-pointer">
+								<img on:click={() => router.goto(`/browse/tv/${item?.id}`)} loading="lazy" class="  w-full h-full rounded object-cover" src={`https://image.tmdb.org/t/p/w500${item?.image}`} alt={item?.title}>
+								<div on:click={() => delTv(item?.id)} class="absolute bottom-0">
+									❌
+								</div>
 							</div>
 						{:else}
 							<div class="h-full flex items-center my-10 justify-center w-full">

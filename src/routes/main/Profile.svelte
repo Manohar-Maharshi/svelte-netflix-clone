@@ -26,7 +26,32 @@
 
 	const sendData = async () => {
 		isLoading = true
-		if (profileName.trim() != "" && profilePhoto.trim() != "") {
+		if (profileName.trim() != "") {
+			try{
+				await updateDoc(doc(db, "users", $user.uid), {
+				  name: profileName,
+				  photo : profilePhoto || $profileData?.photo,
+				});
+			}catch(e){
+				alert(e)
+			}finally{
+				isLoading = false;
+				alert("updated")
+
+			}
+		}else if(profilePhoto.trim() != ""){
+			try{
+				await updateDoc(doc(db, "users", $user.uid), {
+				  name: profileName || $profileData?.name,
+				  photo : profilePhoto,
+				});
+			}catch(e){
+				alert(e)
+			}finally{
+				isLoading = false;
+				alert("updated")
+			}
+		}else if(profileName.trim() != "" && profilePhoto.trim() != ""){
 			try{
 				await updateDoc(doc(db, "users", $user.uid), {
 				  name: profileName,
@@ -36,9 +61,9 @@
 				alert(e)
 			}finally{
 				isLoading = false;
+				alert("updated")
+
 			}
-		}else{
-			alert("gsdsm")
 		}
 	}
 
@@ -58,7 +83,7 @@
 					<div class="pt-1 md:pt-4 w-[20rem] md:w-full flex items-center text-lg justify-end space-x-3 md:space-x-5">
 						<button on:click={logOut} type="button" class="py-1 px-5  font-medium text-[#e50914]">Logout</button>
 						<button on:click={() => router.goto('/browse')} type="button" class="py-1 px-4 md:px-5  font-medium border border-[#e50914]">Cancel</button>
-						<button disabled={(profileName.trim() === "" || profilePhoto.trim() === "")} on:click={sendData} class="disabled:cursor-not-allowed disabled:bg-red-600 py-1.5 px-6 md:px-10  font-medium bg-[#e50914]">{ isLoading ? 'Updating...' : 'Save'}</button>
+						<button disabled={profileName.trim() === "" && profilePhoto.trim() === ""} on:click={sendData} class="disabled:cursor-not-allowed disabled:bg-red-600 py-1.5 px-6 md:px-10  font-medium bg-[#e50914]">{ isLoading ? 'Updating...' : 'Save'}</button>
 					</div>
 				</div>
 			</div>

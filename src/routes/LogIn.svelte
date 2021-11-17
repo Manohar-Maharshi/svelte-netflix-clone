@@ -1,26 +1,68 @@
 <script>
-	import { auth,db } from '$store/firebase'
-	import { createUserWithEmailAndPassword } from "firebase/auth";	
 	import { router } from 'tinro'
+	import generate from 'project-name-generator'
+
+	import { auth,db } from '$store/firebase'
+	import { user } from '$store/user'
+
+	import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
+	import { collection, addDoc, setDoc , doc,serverTimestamp  } from "firebase/firestore"; 	
+
 	let isSignUpFormOpened = false;
 	let error = "";
+	let isLoading = false;
 
 	let email ="";
 	let password = "";
 	let confirmPassword ="";
 
-	 const handleLogin = () => {
+	 const handleLogin = async () => {
+	 	error = "";
+	 	isLoading = true
 	    if(email.trim() != "" && password.trim() != ""){
-	    	router.goto('browse')
+    		signInWithEmailAndPassword(auth, email, password)
+			  .then((userCredential) => {
+			    $user = userCredential.user;
+			    isLoading = true;
+			  })
+			  .catch((errorUp) => {
+			  	error = errorUp.code
+			  	isLoading = false
+			  });
 	    }else{
 	    	alert("Enter email and password!!!!!!");
 	    }
 	}
 
 	 const handleSignUp = async () => {
+	 	error = "";
+	 	isLoading = true
 	    if(email.trim() != "" && password.trim() != "" && password.trim() != "" && confirmPassword.trim() != ""){
 	    	if(password === confirmPassword){
-	    		error = "";
+				createUserWithEmailAndPassword(auth, email, password)
+				  .then(async (userCredential) => {
+				    $user = userCredential.user;
+				    if($user){
+						try {
+						  await setDoc(doc(db, "users" , $user.uid), {
+						    name : $user.displayName || generate().spaced,
+						    email : $user.email,
+						    photo : $user.photoURL || `https://avatars.dicebear.com/api/adventurer-neutral/${$user.uid}.svg?background=red`,
+						    creationTime : serverTimestamp()
+						  });
+						} catch (e) {
+						  error = e
+						  console.log(e)
+						} finally{
+				    		isLoading = false;
+						}
+				    }
+				    isLoading = false;
+				  })
+				  .catch((errorUp) => {
+				  	error = errorUp.message
+				  	isLoading = false;
+				  });
 	    	}else{
 	    		error ="Passwrods didn't match, please check"
 	    	}
@@ -32,7 +74,7 @@
 	$: if (error) {
 		setTimeout(() =>{
 			error = "";
-		}, 3000);
+		}, 4000);
 	}
 </script>
 <main>
@@ -47,7 +89,7 @@
 	   </nav>
 	   <section class="max-w-md container mx-auto bg-[#000000bf] p-10">
 		   	{#if error}	   		
-		   		<div class="bg-[#e87c03] rounded p-2 text-xs w-full">
+		   		<div class="bg-[#e87c03] rounded p-2 text-sm w-full">
 		   			{error}
 		   		</div>
 		   	{/if}
@@ -57,7 +99,7 @@
 		   			<input required bind:value={email} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="email" placeholder="Email or Phone number">
 		   			<input required bind:value={password} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Password">
 		   			<div class="pt-4 w-full">
-		   				<button type="submit" class="w-full py-2.5 text-lg font-medium bg-[#e50914]">Sign In</button>
+		   				<button disabled={isLoading} type="submit" class="w-full py-2.5 text-lg font-medium bg-[#e50914]">{ isLoading ? 'Authenticating...' : "Sign In" }</button>
 		   			</div>
 		   		</form>
 		   		<div class="w-full h-0.5 bg-gray-900 my-6"></div>
@@ -71,8 +113,7 @@
 		   			<input required bind:value={password} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Password">
 		   			<input required bind:value={confirmPassword} class="rounded focus:outline-none bg-[#333] py-3 px-3 w-full" type="password" placeholder="Confirm Password">
 		   			<div class="pt-4 w-full">
-		   				<button type="submit" class="w-full py-2.5 text-lg font-medium bg-[#e50914]">Sign Up</button>
-		   			</div>
+		   				<button disabled={isLoading} type="submit" class="w-full py-2.5 text-lg font-medium bg-[#e50914]">{ isLoading ? 'Authenticating...' : "Sign Up" }</button>		   			</div>
 		   		</form>
 		   		<div class="w-full h-0.5 bg-gray-900 my-6"></div>
 	   			<div class="w-full">

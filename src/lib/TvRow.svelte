@@ -3,6 +3,9 @@
 
 	import { uriArray,fetchMovies } from '$store/movieRows'
 	import movieTrailer from 'movie-trailer';
+	import { collection, addDoc,doc, setDoc ,getDoc} from "firebase/firestore"; 
+	import { auth,db } from '$store/firebase'
+	import { user } from '$store/user'
 
 	export let name = "";
 	export let uri = "";
@@ -10,6 +13,7 @@
 	let promise;
 	let clickedMovieData = null;
 	let movieData = null;
+	let isLoading = false;
 
 	const getMovieData = (id) => {
 		if(movieData){
@@ -24,6 +28,28 @@
  		const json = await res.json();
 		movieData = json;
  		return json;
+	}
+
+	const addToList = async (result) => {
+		isLoading = true
+		const docSnap = await getDoc(doc(db, "users", $user.uid, "MyList" ,"TvShows" ,"TvShow" , result?.id.toString()));
+		if (docSnap.exists()) {
+			isLoading = false;
+		  	alert("Already In Your List")
+		} else {
+			try{
+				await setDoc(doc(db, "users", $user.uid , "MyList" ,"TvShows" ,"TvShow" , result?.id.toString()), {
+				  title : result?.name,
+				  image : result?.poster_path,
+				  id: result?.id,
+				})
+			}catch(e){
+				alert(e.message)
+			} finally{
+				isLoading = false;
+				alert("added to your list")
+			}
+		}
 	}
 </script>
 <div class="mb-4">
@@ -76,12 +102,12 @@
 								    			<span>Know More</span>
 								    		</div>
 								    	</button>
-								    	<button class="text-gray-700 px-6 text-center py-[0.5rem] font-medium rounded bg-gray-100">
+								    	<button on:click={() => addToList(result)} class="text-gray-700 px-6 text-center py-[0.5rem] font-medium rounded bg-gray-100">
 											<div class="flex items-center justify-center space-x-1">
 												<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
 												  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
 												</svg>
-												<span>My List</span>
+												<span>{ isLoading ? 'Adding...' : "MyList"}</span>
 											</div>
 								    	</button>
 								    </div>

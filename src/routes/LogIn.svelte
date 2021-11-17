@@ -30,6 +30,7 @@
 			  	isLoading = false
 			  });
 	    }else{
+	    	isLoading= false;
 	    	alert("Enter email and password!!!!!!");
 	    }
 	}
@@ -64,9 +65,11 @@
 				  	isLoading = false;
 				  });
 	    	}else{
+	    		isLoading = false
 	    		error ="Passwrods didn't match, please check"
 	    	}
 	    }else{
+	    	isLoading = false;
 	    	alert("Must Enter Your Email and Password!!!");
 	    }
 	 }

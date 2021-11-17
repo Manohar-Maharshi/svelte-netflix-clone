@@ -3,6 +3,7 @@
 	import {active,router} from 'tinro';
 	import { uriArray,fetchMovies } from '$store/movieRows'
 	import debounce from 'just-debounce-it';
+	import { profileData } from '$store/user'
 
 	let openDropDown = false;
 	let openSearchList = false
@@ -84,8 +85,8 @@
 	   			</div>
 	   		</li>
 	   		<li>
-	   			<a href="/browse/profile">
-	   				<img class="h-[2.25rem]" src="https://avatars.dicebear.com/api/adventurer-neutral/netflix.svg?background=red" alt="Gooo">
+	   			<a title={$profileData ? $profileData?.name : 'None'} href="/browse/profile">
+	   				<img class="w-[2.5rem] h-[2.3rem]" src={ $profileData ? $profileData.photo : "https://avatars.dicebear.com/api/adventurer-neutral/netflix.svg?background=red"} alt={$profileData ? $profileData?.name : 'None'} >
 	   			</a>
 	   		</li>
 	   		<li class="md:hidden block">
